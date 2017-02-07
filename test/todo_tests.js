@@ -27,7 +27,8 @@ assert.strictEqual(todos.create(todoItem2), false, 'Function create, object not 
 assert.strictEqual(todos.create(todoNoNameItem3), false, 'Function create, object not created, no name provided')
 
 // test list function
-assert.ok(todos.list().length > 0, 'Function list should return an array of all todos')
+assert.ok(todos.list().length > 0, 'Function list should have not be empty')
+assert.deepStrictEqual(typeof todos.list(), 'object', 'Function list should return an object  typeof')
 
 console.log(todos.list())
 var firstObj = todos.list()[0]
@@ -52,8 +53,8 @@ assert.ok(todos.list().length === 0, 'Function destroyAll should return  0 lengt
 
 // test update function
 var newObj = {
-  name: 'newName',
-  description: 'Do not do it',
+  name: 'LuLuLaLa',
+  description: 'Buy veggie',
   completed: false
 }
 
@@ -64,6 +65,8 @@ var newObjId = todos.list()[0]._id
 assert.strictEqual(todos.update(newObjId, newObj), true, 'Object with unique id cannot update'
 )
 
+assert.strictEqual(todos.update('233333', newObj), false, 'No id found'
+)
 console.log(todos.list()[0])
 
 assert.strictEqual(todos.update(newObjId, todoItem2), false, 'Update parameter name value should be at least 5 characters long.'

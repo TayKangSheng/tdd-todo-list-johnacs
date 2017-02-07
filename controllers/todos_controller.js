@@ -13,19 +13,18 @@ const todos = []
 
 // CREATE - params should be an object with keys for name, description and completed
 function create (params) {
+  // if (!params.name) throw new Error('Name is required')
+  // if (params.name.length < 5) throw new Error('Name is too short')
+  // if (!params.description) params.description = 'To do task'
+  // if (!params.completed) params.completed = false
+
   if (params.hasOwnProperty('name') && params.name.length > 5) {
-    var todo = {}
-    todo = {
-      _id: uuidGenerator(),
-      name: params.name,
-      description: params.description,
-      completed: params.completed
-    }
-    todos.push(todo)
+    params._id = uuidGenerator()
+    todos.push(params)
     return true
-  } else {
-    return false
   }
+
+  return false
 }
 
 // READ (list & show)
@@ -33,6 +32,7 @@ function list () {
   // return list of all TODOs
   return todos
 }
+
 function show (id) {
   // find the TODO with this id
   for (item in todos) {
@@ -44,37 +44,40 @@ function show (id) {
 }
 
 // UPDATE - params should be an object with KVPs for the fields to update
-function update (id, params) {
- if (params.name.length < 5) {
-   return false
- }
- for (var i = 0; i < todos.length; i++) {
-   if (todos[i]._id === id) {
-     todos[i].name = params.name
-     todos[i].description = params.description
-     todos[i].completed = params.completed
-     return true
-   }
- }
- return false
-}
-
-// DESTROY (destroy & destroyAll)
-function destroy (id) {
-  for (var i = 0; i < todos.length; i++) {
-    if (id === todos[i]._id) {
-      todos.splice(i, 1)
-      return true
+function update (id, udatedParams) {
+  if (udatedParams.hasOwnProperty('name') && udatedParams.name.length > 5) {
+    for (var i = 0; i < todos.length; i++) {
+      if (todos[i]._id === id) {
+        todos[i].name = udatedParams.name
+        todos[i].description = udatedParams.description
+        todos[i].completed = udatedParams.completed
+        return true
+      }
     }
   }
   return false
 }
 
+// DESTROY (destroy & destroyAll)
+function destroy (id) {
+  var todoById = show(id)
+  var deletedIndex = todos.indexOf(todoById)
+
+  if (!todoById) return false
+  if(todos.splice(deletedIndex,1)) return true
+  // for (var i = 0; i < todos.length; i++) {
+  //   if (id === todos[i]._id) {
+  //     todos.splice(i, 1)
+  //     return true
+  //   }
+  // }
+  // return false
+}
+
 function destroyAll () {
-  for (var i = todos.length - 1; i >= 0; i--) {
-    todos.pop()
-    return true
-  }
+  todos.forEach(function(todo){
+    destroy(todo._id)
+  })
 }
 
 module.exports = {
